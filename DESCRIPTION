@@ -22,3 +22,5 @@ RoxygenNote: 7.3.2
 Depends:
     R (>= 3.5)
 Imports: lpSolve, data.tree, stats
+URL: https://github.com/vjbolos/deaCI
+BugReports: https://github.com/vjbolos/deaCI/issues
