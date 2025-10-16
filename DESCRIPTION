@@ -1,0 +1,24 @@
+Package: deaCI
+Title: Data Envelopment Analysis with Composite Indicators
+Version: 1.0.0
+Authors@R: c(person(given = "Vicente",
+                      family = "Bolós",
+                      role = c("aut", "cre"),
+                      email = "vicente.bolos@uv.es"),
+               person(given = "Vicente",
+                      family = "Coll-Serrano",
+                      role = "aut",
+                      email = "vicente.coll@uv.es"),
+               person(given = "Rafael",
+                      family = c("Benítez", "Suárez"),
+                      role = "aut",
+                      email = "rabesua@uv.es"))
+Maintainer: Vicente Bolós <vicente.bolos@uv.es>
+Description: Some models with composite indicators in data envelopment analysis (DEA). Basic and multi-layer methods are implemented, as well as their respective super-efficiency models. See: Yongjun Shen; Elke Hermans; Tom Brijs; Geert Wets (2013). <doi:10.1007/s11205-012-0171-0>.
+License: GPL
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Depends:
+    R (>= 3.5)
+Imports: lpSolve, data.tree, stats
