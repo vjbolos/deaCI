@@ -61,7 +61,7 @@ scores_multilayer <-
     }
 
     dmu_eval <- x$dmu_eval
-    Y_eval <- as.matrix(x$data_indicators[dmu_eval, -1])
+    Y_eval <- as.matrix(x$data_indicators[dmu_eval, ])
 
     nde <- length(x$DMU)
     scores <- vector(mode = "list", length = nde)

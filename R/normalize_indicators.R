@@ -5,8 +5,8 @@
 #' @usage normalize_indicators(data_indicators,
 #'                      cost = NULL)
 #'
-#' @param data_indicators A data frame with the values of indicators of each DMU by rows. The first column
-#'  contains the names of the DMUs.
+#' @param data_indicators A data frame with the values of indicators of each DMU by rows. The names of
+#'  the DMUs are the names of the rows. Optionally, the first column could contain the names of the DMUs.
 #' @param cost An array with the positions of cost indicators (1 for the first indicator, 2 for the
 #'  second one, etc.). The rest are supposed to be benefit indicators. By default, there are no cost
 #'  indicators.
@@ -45,7 +45,12 @@ normalize_indicators <-
   function(data_indicators,
            cost = NULL) {
 
-    Y <- as.matrix(data_indicators[, -1])
+    if (class(data_indicators[[1]]) == "character") {
+      rownames(data_indicators) <- data_indicators[[1]]
+      data_indicators <- data_indicators[, -1]
+    }
+
+    Y <- as.matrix(data_indicators)
     nI <- ncol(Y)     # Número de Indicadores
 
     if (!is.null(cost)) {
@@ -66,7 +71,8 @@ normalize_indicators <-
     Y_norm[, cost] <- sweep(Yc, 2, min_cols, FUN = "/")
     Y_norm[, cost] <- 1 / Y_norm[, cost]
 
-    data_indicators_norm <- cbind(data_indicators[, 1], Y_norm)
+    data_indicators_norm <- as.data.frame(Y_norm)
+    rownames(data_indicators_norm) <- rownames(data_indicators)
     colnames(data_indicators_norm) <- colnames(data_indicators)
 
     return(data_indicators_norm)

@@ -1,11 +1,13 @@
 #' Data: Shen, Hermans, Brijs and Wets (2013).
 #'
-#' Data of 13 countries with 11 indicators (outputs).
-#'  
+#' Data of 13 countries (DMUs) with 11 indicators (outputs).
+#'
 #' @usage data("Shen2013")
-#' 
-#' @format Data frame with 13 rows and 12 columns. Indicators are normalized according
-#' to Shen et al. (2013). Definition of indicators (I):
+#'
+#' @format Data frame with 13 rows (countries) and 11 columns (indicators). Supposedly,
+#' indicators are normalized according to Shen et al. (2013), but in reality they are not.
+#' The names of the DMUs are the names of the rows.
+#' Definition of indicators (I):
 #' \describe{
 #'   \item{I1}{Percentage of drivers above legal alcohol limit in roadside police tests}
 #'   \item{I2}{Percentage of alcohol-related fatalities}
@@ -19,7 +21,7 @@
 #'   \item{I10}{Daytime seatbelt wearing rate in rear seats of light vehicles (percentage)}
 #'   \item{I11}{Daytime usage rate of child restraints (percentage)}
 #' }
-#' 
+#'
 #' @source Yongjun Shen; Elke Hermans; Tom Brijs; Geert Wets (2013). "Data Envelopment Analysis
 #' for Composite Indicators: A Multiple Layer Model", Social Indicators Research 114, 739–756.
 #' \doi{10.1007/s11205-012-0171-0}
@@ -27,7 +29,7 @@
 #' @author
 #' \strong{Vicente Bolos} (\email{vicente.bolos@@uv.es}).
 #' \emph{Department of Business Mathematics}
-#' 
+#'
 #' \strong{Vicente Coll-Serrano} (\email{vicente.coll@@uv.es}).
 #' \emph{Quantitative Methods for Measuring Culture (MC2). Applied Economics.}
 #'

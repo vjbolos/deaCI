@@ -5,15 +5,37 @@
 #' and Petersen (1993).
 #'
 #' @usage model_basicCI_super(data_indicators,
+#'                     sharebounds = NULL,
 #'                     ubounds = NULL,
+#'                     ubounds_rel = NULL,
 #'                     dmu_eval = NULL,
 #'                     dmu_ref = NULL,
 #'                     returnlp = FALSE)
 #'
-#' @param data_indicators A data frame with the values of indicators of each DMU by rows. The first column
-#'  contains the names of the DMUs.
-#' @param ubounds A vector with lower and upper relative bounds (in proportion to 1) for \code{u * y_0}.
-#'  If \code{NULL} (default), there are no bounds.
+#' @param data_indicators A data frame with the values of indicators of each DMU by rows. The names of
+#'  the DMUs are the names of the rows. Optionally, the first column could contain the names of the DMUs.
+#' @param sharebounds It can be a vector of length \code{2} or a matrix of \code{2} rows and a number of
+#'  columns equal to the number of indicators. In the first case, it contains
+#'  the lower and upper bounds (in proportion to 1) of the shares for all indicators.
+#'  The shares are the proportions that each indicator contributes to the efficiency score,
+#'  according to Shen et al. (2013). In the second case, it contains the lower and upper bounds
+#'  of the shares for each indicator(minimums in the first row and maximums
+#'  in the second row).
+#'  If \code{sharebounds} is \code{NULL} (default), it is constructed automatically.
+#'  For example, if there are 3 categories in the top layer, it takes the value \code{c(0.1, 0.5)},
+#'  as in Shen et al. (2013).
+#' @param ubounds It can be a vector of length \code{2} or a matrix of \code{2} rows and a number of
+#'  columns equal to the number of indicators. In the first case, it contains
+#'  the lower and upper bounds of the weights u for all indicators.
+#'  In the second case, it contains the lower and upper bounds
+#'  of the weights u for each indicator (minimums in the first row and maximums
+#'  in the second row). Note that the weights u do not add up to 1.
+#' @param ubounds_rel It can be a vector of length \code{2} or a matrix of \code{2} rows and a number of
+#'  columns equal to the number of indicators. In the first case, it contains
+#'  the lower and upper bounds of the weights u (relativized in proportion to 1) for all indicators.
+#'  In the second case, it contains the lower and upper bounds of the weights u (relativized
+#'  in proportion to 1) for each indicator (minimums in the first row and maximums
+#'  in the second row). Note that the relativized weights sum to 1.
 #' @param dmu_eval A numeric vector containing which DMUs have to be evaluated.
 #'  If \code{NULL} (default), all DMUs are considered.
 #' @param dmu_ref A numeric vector containing which DMUs are the evaluation reference set.
@@ -23,7 +45,8 @@
 #'
 #' @returns A list of the results for the evaluated DMUs (\code{DMU} component),
 #'  along with any other necessary information to replicate the results, such as the name of the model and
-#'  parameters \code{data_indicators}, \code{ubounds}, \code{dmu_eval} and \code{dmu_ref}.
+#'  parameters \code{data_indicators}, \code{sharebounds}, \code{ubounds}, \code{ubounds_rel},
+#'  \code{dmu_eval} and \code{dmu_ref}.
 #'
 #' @author
 #' \strong{Vicente Bolós} (\email{vicente.bolos@@uv.es}).
@@ -43,10 +66,12 @@
 #' \doi{10.1007/s11205-012-0171-0}
 #'
 #' @examples
-#' # Replication of results in Shen et al. (2013) using layer_list.
+#' # Replication of results in Shen et al. (2013).
 #'
 #' data("Shen2013")
-#' result <- model_basicCI_super(data_indicators = Shen2013)
+#' sharebounds <- c(0, 1)
+#' result <- model_basicCI_super(data_indicators = Shen2013,
+#'                               sharebounds = sharebounds)
 #' CI(result)
 #'
 #' @seealso \code{\link{model_basicCI}}, \code{\link{model_multilayer_super}}, \code{\link{CI}}
@@ -55,13 +80,20 @@
 
 model_basicCI_super <-
   function(data_indicators,
+           sharebounds = NULL,
            ubounds = NULL,
+           ubounds_rel = NULL,
            dmu_eval = NULL,
            dmu_ref = NULL,
            returnlp = FALSE) {
 
+    if (class(data_indicators[[1]]) == "character") {
+      rownames(data_indicators) <- data_indicators[[1]]
+      data_indicators <- data_indicators[, -1]
+    }
+
     nd <- nrow(data_indicators)
-    dmunames <- data_indicators[, 1]
+    dmunames <- rownames(data_indicators)
 
     if (is.null(dmu_eval)) {
       dmu_eval <- 1:nd
@@ -90,7 +122,9 @@ model_basicCI_super <-
 
       deasol <- do.call(model_modelname,
                         list(data_indicators = data_indicators,
+                             sharebounds = sharebounds,
                              ubounds = ubounds,
+                             ubounds_rel = ubounds_rel,
                              dmu_eval = ii,
                              dmu_ref = dmu_ref[dmu_ref != ii],
                              returnlp = returnlp
@@ -104,7 +138,9 @@ model_basicCI_super <-
     modelOutput <- list(modelname = "basicCI_super",
                         DMU = DMU,
                         data_indicators = data_indicators,
-                        ubounds = ubounds,
+                        sharebounds = deasol$sharebounds,
+                        ubounds = deasol$ubounds,
+                        ubounds_rel = deasol$ubounds_rel,
                         dmu_eval = dmu_eval,
                         dmu_ref = dmu_ref
     )
