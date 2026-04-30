@@ -5,17 +5,40 @@
 \title{Basic DEA-CI model}
 \usage{
 model_basicCI(data_indicators,
+              sharebounds = NULL,
               ubounds = NULL,
+              ubounds_rel = NULL,
               dmu_eval = NULL,
               dmu_ref = NULL,
               returnlp = FALSE)
 }
 \arguments{
-\item{data_indicators}{A data frame with the values of indicators of each DMU by rows. The first column
-contains the names of the DMUs.}
+\item{data_indicators}{A data frame with the values of indicators of each DMU by rows.}
 
-\item{ubounds}{A vector with lower and upper relative bounds (in proportion to 1) for \code{u * y_0}.
-If \code{NULL} (default), there are no bounds.}
+\item{sharebounds}{It can be a vector of length \code{2} or a matrix of \code{2} rows and a number of
+columns equal to the number of indicators. In the first case, it contains
+the lower and upper bounds (in proportion to 1) of the shares for all indicators.
+The shares are the proportions that each indicator contributes to the efficiency score,
+according to Shen et al. (2013). In the second case, it contains the lower and upper bounds
+of the shares for each indicator(minimums in the first row and maximums
+in the second row).
+If \code{sharebounds} is \code{NULL} (default), it is constructed automatically.
+For example, if there are 3 categories in the top layer, it takes the value \code{c(0.1, 0.5)},
+as in Shen et al. (2013).}
+
+\item{ubounds}{It can be a vector of length \code{2} or a matrix of \code{2} rows and a number of
+columns equal to the number of indicators. In the first case, it contains
+the lower and upper bounds of the weights u for all indicators.
+In the second case, it contains the lower and upper bounds
+of the weights u for each indicator (minimums in the first row and maximums
+in the second row). Note that the weights u do not add up to 1.}
+
+\item{ubounds_rel}{It can be a vector of length \code{2} or a matrix of \code{2} rows and a number of
+columns equal to the number of indicators. In the first case, it contains
+the lower and upper bounds of the weights u (relativized in proportion to 1) for all indicators.
+In the second case, it contains the lower and upper bounds of the weights u (relativized
+in proportion to 1) for each indicator (minimums in the first row and maximums
+in the second row). Note that the relativized weights sum to 1.}
 
 \item{dmu_eval}{A numeric vector containing which DMUs have to be evaluated.
 If \code{NULL} (default), all DMUs are considered.}
@@ -29,16 +52,19 @@ function and constraints).}
 \value{
 A list of the results for the evaluated DMUs (\code{DMU} component),
 along with any other necessary information to replicate the results, such as the name of the model and
-parameters \code{data_indicators}, \code{ubounds}, \code{dmu_eval} and \code{dmu_ref}.
+parameters \code{data_indicators}, \code{sharebounds}, \code{ubounds}, \code{ubounds_rel},
+\code{dmu_eval} and \code{dmu_ref}.
 }
 \description{
 Basic DEA model for composite indicators, according to Shen at al. (2013).
 }
 \examples{
-# Replication of results in Shen et al. (2013) using layer_list.
+# Replication of results in Shen et al. (2013).
 
 data("Shen2013")
-result <- model_basicCI(data_indicators = Shen2013)
+sharebounds <- c(0, 1)
+result <- model_basicCI(data_indicators = Shen2013,
+                        sharebounds = sharebounds)
 CI(result)
 
 }

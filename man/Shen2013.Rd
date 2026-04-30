@@ -5,8 +5,9 @@
 \alias{Shen2013}
 \title{Data: Shen, Hermans, Brijs and Wets (2013).}
 \format{
-Data frame with 13 rows and 12 columns. Indicators are normalized according
-to Shen et al. (2013). Definition of indicators (I):
+Data frame with 13 rows (countries) and 11 columns (indicators). Supposedly,
+indicators are normalized according to Shen et al. (2013), but in reality they are not.
+Definition of indicators (I):
 \describe{
 \item{I1}{Percentage of drivers above legal alcohol limit in roadside police tests}
 \item{I2}{Percentage of alcohol-related fatalities}
@@ -30,7 +31,7 @@ for Composite Indicators: A Multiple Layer Model", Social Indicators Research 11
 data("Shen2013")
 }
 \description{
-Data of 13 countries with 11 indicators (outputs).
+Data of 13 countries (DMUs) with 11 indicators (outputs).
 }
 \examples{
 # Example. Replication of results in Shen et al. (2013).

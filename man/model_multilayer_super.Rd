@@ -7,16 +7,16 @@
 model_multilayer_super(data_indicators,
                        layer_list = NULL,
                        hierarchy_tree = NULL,
+                       sharebounds = NULL,
                        ubounds = NULL,
+                       ubounds_rel = NULL,
                        wrange = NULL,
-                       wrangematrix = NULL,
                        dmu_eval = NULL,
                        dmu_ref = NULL,
                        returnlp = FALSE)
 }
 \arguments{
-\item{data_indicators}{A data frame with the values of indicators of each DMU by rows. The first column
-contains the names of the DMUs.}
+\item{data_indicators}{A data frame with the values of indicators of each DMU by rows.}
 
 \item{layer_list}{A list with the categories of each layer (from layer 2 upwards)
 and their subcategories. Layer 1 (the bottom layer) is not included because it is assumed to always
@@ -25,21 +25,52 @@ contain all the indicators, according to Shen et al. (2013).}
 \item{hierarchy_tree}{Alternative to \code{layer_list}. It is a \code{Node} structure from package
 \pkg{data.tree}, representing the hierarchical tree of categories and indicators.
 Indicators are the leafs of the tree, not necessarily in the bottom layer. It is automatically
-transformed into a \code{layer_list} parameter.}
+transformed into a \code{layer_list} parameter. If \code{layer_list} is not \code{NULL}, it is ignored.}
 
-\item{ubounds}{A vector with lower and upper relative bounds (in proportion to 1) for \code{u_hat * y_0}
-in the top layer, according to Shen et al. (2013). By default, it is constructed automatically.
+\item{sharebounds}{It can be a vector of length \code{2} or a matrix of \code{2} rows and a number of
+columns equal to the number of indicators in the top layer. In the first case, it contains
+the lower and upper bounds (in proportion to 1) of the shares for all indicators in the top layer.
+The shares are the proportions that each indicator contributes to the efficiency score,
+according to Shen et al. (2013). In the second case, it contains the lower and upper bounds
+of the shares for each indicator in the top layer (minimums in the first row and maximums
+in the second row).
+If \code{sharebounds} is \code{NULL} (default), it is constructed automatically.
 For example, if there are 3 categories in the top layer, it takes the value \code{c(0.1, 0.5)},
 as in Shen et al. (2013).}
 
-\item{wrange}{A vector with two components. Weights vary in a range from \code{wrange[1]} to
-\code{wrange[2]} of the average weight in each category. Since the weights within a category must
-add up to 1, \code{wrange[1]} must be between 0 and 1, and \code{wrange[2]} must be greater than 1.
-By default, it takes the value \code{c(0.8, 1.2)}, as in Shen et al. (2013).}
+\item{ubounds}{It can be a vector of length \code{2} or a matrix of \code{2} rows and a number of
+columns equal to the number of indicators in the top layer. In the first case, it contains
+the lower and upper bounds of the weights u for all indicators in the top layer.
+In the second case, it contains the lower and upper bounds
+of the weights u for each indicator in the top layer (minimums in the first row and maximums
+in the second row). Note that the weights u do not add up to 1.}
 
-\item{wrangematrix}{A matrix of size \code{2 x (K - 1)} (where \code{K} is the number of layers)
-with weight ranges from layer \code{1} to layer \code{K - 1}. It is an alternative to
-\code{wrange}, in the case of different weight ranges for each layer.}
+\item{ubounds_rel}{It can be a vector of length \code{2} or a matrix of \code{2} rows and a number of
+columns equal to the number of indicators in the top layer. In the first case, it contains
+the lower and upper bounds of the weights u (relativized in proportion to 1) for all indicators in the top layer.
+In the second case, it contains the lower and upper bounds of the weights u (relativized
+in proportion to 1) for each indicator in the top layer (minimums in the first row and maximums
+in the second row). Note that the relativized weights sum to 1.}
+
+\item{wrange}{It can be a vector of length \code{2} or a list of length \code{K - 1},
+where \code{K} is the number of layers.
+
+In the first case, it contains the relative weight ranges for all layers (except
+the top layer) and categories. Weights vary in a range from \code{wrange[1]}
+to \code{wrange[2]} multiplied by the average weight in each category. Since the
+weights within a category must add up to 1, \code{wrange[1]} must be between 0 and 1,
+and \code{wrange[2]} must be greater than 1.
+
+In the second case, the elements of the list are matrices of \code{2} rows containing
+the absolute weight ranges of the indicators within each layer (minimums in the first row
+and maximums in the second row), from layer \code{1} to layer \code{K - 1}.
+The number of columns must be equal to the number of indicators in the corresponding layer.
+If a matrix of the list (corresponding to the weight ranges of an entire layer) is \code{NULL}, then
+the weight ranges of this layer are constructed assuming that the relative weight ranges
+are \code{c(0.8, 1.2)}, as in Shen et al. (2013).
+
+If \code{wrange} is \code{NULL} (default), it takes  the value \code{c(0.8, 1.2)},
+i.e. all layers have these relative weight bounds, as in Shen et al. (2013).}
 
 \item{dmu_eval}{A numeric vector containing which DMUs have to be evaluated.
 If \code{NULL} (default), all DMUs are considered.}
@@ -53,8 +84,8 @@ function and constraints).}
 \value{
 A list of the results for the evaluated DMUs (\code{DMU} component),
 along with any other necessary information to replicate the results, such as the name of the model and
-parameters \code{data_indicators}, \code{layer_list}, \code{ubounds}, \code{wrangematrix},
-\code{dmu_eval} and \code{dmu_ref}.
+parameters \code{data_indicators}, \code{layer_list}, \code{sharebounds}, \code{ubounds},
+\code{ubounds_rel}, \code{wrange}, \code{dmu_eval} and \code{dmu_ref}.
 }
 \description{
 Radial super-efficiency multi-layer DEA model for composite indicators,

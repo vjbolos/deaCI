@@ -8,8 +8,7 @@ normalize_indicators(data_indicators,
                      cost = NULL)
 }
 \arguments{
-\item{data_indicators}{A data frame with the values of indicators of each DMU by rows. The first column
-contains the names of the DMUs.}
+\item{data_indicators}{A data frame with the values of indicators of each DMU by rows.}
 
 \item{cost}{An array with the positions of cost indicators (1 for the first indicator, 2 for the
 second one, etc.). The rest are supposed to be benefit indicators. By default, there are no cost
